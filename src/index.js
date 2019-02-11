@@ -2,6 +2,17 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 
+import Icon from '@material-ui/core/Icon';
+import IconButton from '@material-ui/core/IconButton'
+import Fab from '@material-ui/core/Fab';
+import Card from '@material-ui/core/Card';
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import Typography from '@material-ui/core/Typography';
+import InputBase from '@material-ui/core/InputBase';
+import { fade } from '@material-ui/core/styles/colorManipulator';
+import SearchIcon from '@material-ui/icons/Search';
+
 class Logic extends React.Component {
   constructor(props) {
     super(props);
@@ -87,7 +98,7 @@ class Logic extends React.Component {
 
     let audio = document.getElementById('audio');
     let result = this.state.results[index];
-    console.info(result.trackName);
+    // console.info(result.trackName);
 
     audio.src = result.previewUrl;
     audio.play();
@@ -122,7 +133,7 @@ class Logic extends React.Component {
   }
 
   playFinish() {
-    console.info('Play Finish')
+    // console.info('Play Finish')
 
     this.setState({
       playIndex: null,
@@ -139,14 +150,16 @@ class Logic extends React.Component {
   }
 
   render() {
-    console.info(this.state)
+    // console.info(this.state)
     let results = this.state.results;
     let playState = this.state.playState;
 
     return(
+      
       <div>
         <Header searchByKeyword={this.searchByTerm}/>
         <Control playState={playState} pause={this.playPause} restart={this.playRestart} />
+        <div style={{height:'72px'}}></div>
         <List results={results} searchByArtist={this.searchByArtistId} searchByCollection={this.searchByCollectionId} play={this.play}/>
         <audio id='audio' onEnded={this.playEnd} onTimeUpdate={this.playTimeupdate}></audio>
       </div>
@@ -173,11 +186,21 @@ class Header extends React.Component {
   }
 
   render() {
-    return (
-    <div>
-      <input type="text" name="keyword" value={this.state.keyword} onChange={this.changeKeyword}/>
-      <button onClick={() => this.props.searchByKeyword(this.state.keyword)} >検索</button>
-    </div>
+    return (    
+      <AppBar position="fixed" color="primary" >
+        <Toolbar>
+          <Typography variant="title" color="inherit" style={{marginRight:"16px"}}>
+            Preview5
+          </Typography>
+          <div style={{ flexGrow: 1 }}></div>
+          <div style={{position:"relative", marginLeft:0, backgroundColor: fade('#FFFFFF', 0.15),}}>
+          <div style={{position: 'absolute',height: '100%',display: 'flex',alignItems: 'center',justifyContent: 'center',paddingLeft:"8px"}}>
+            <SearchIcon />
+            </div>
+            <InputBase name="keyword" type="search" placeholder="Search…" style={{color: "inherit",paddingLeft:"48px"}} value={this.state.keyword} onChange={this.changeKeyword} onKeyDown={(e) => (e.keyCode === 13)?this.props.searchByKeyword(this.state.keyword):null} />
+          </div>
+        </Toolbar>
+      </AppBar>      
     );
   }
 }
@@ -191,8 +214,8 @@ class Control extends React.Component {
   }
 
   componentWillReceiveProps(props) {
-    console.log('componentWillReceiveProps')
-    console.log(props.playState)
+    // console.log('componentWillReceiveProps')
+    // console.log(props.playState)
     this.setState({
       playState: props.playState
     });
@@ -203,9 +226,10 @@ class Control extends React.Component {
     let button = '';
     if(!playState) {
     } else if(playState === 'play'){
-      button = <button onClick={() => this.props.pause()}>停止する</button>;
+      button = <Fab style={{position:'fixed',right:'20px', bottom:'20px', padding:"4px", zIndex:'999'}} color="primary" onClick={() => this.props.pause()}><Icon fontSize="small">pause_arrow</Icon></Fab>;
+      
     } else {
-      button = <button onClick={() => this.props.restart()}>再生する</button>;
+      button = <Fab style={{position:'fixed',right:'20px', bottom:'20px', padding:"4px", zIndex:'999'}} color="primary" onClick={() => this.props.restart()}><Icon fontSize="small">play_arrow</Icon></Fab>;
     }
 
     return(
@@ -225,7 +249,6 @@ class List extends React.Component {
   }
 
   componentWillReceiveProps(props) {
-    // console.info(props);
     this.setState({
       results: props.results,
     });
@@ -237,8 +260,7 @@ class List extends React.Component {
     let results = this.state.results;
 
     results.forEach((result, index) => {
-      children.push(<Card result={result} key={result.trackId} index={index} searchByArtist={this.props.searchByArtist} searchByCollection={this.props.searchByCollection} play={this.props.play}></Card>);
-      console.info(result);
+      children.push(<Row result={result} key={result.trackId} index={index} searchByArtist={this.props.searchByArtist} searchByCollection={this.props.searchByCollection} play={this.props.play}></Row>);
     });
 
     return ( 
@@ -247,7 +269,7 @@ class List extends React.Component {
   }
 }
 
-class Card extends React.Component {
+class Row extends React.Component {
 
   render() {
     let result = this.props.result;
@@ -263,20 +285,27 @@ class Card extends React.Component {
     }
     
     return (
-      <div>
-        -----<br></br>
-        {index + 1}. {result.trackName} / {result.artistName}
-        <br></br>
-        <img src={this.props.result.artworkUrl100} alt={this.props.result.name}></img>
-        <br></br>
-        <button onClick={() => this.props.searchByArtist(this.props.result.artistId)}>By Artist</button>
-        <br></br>
-        <button onClick={() => this.props.searchByCollection(this.props.result.collectionId)}>By Collection</button>
-        <br></br>
-        <button onClick={() => this.props.play(index)}>Play</button>
-        <br></br>
-        <a id={this.props.result.id} href={this.props.result.trackViewUrl} target="_blank" rel="noopener noreferrer" style={iTunesLinstStyle}> </a>
-      </div>
+      
+        <Card style={{marginBottom: '8px'}}>
+          <table>
+        <tbody>
+          <tr>
+            <td>
+            <img src={this.props.result.artworkUrl100} alt={this.props.result.name}></img>
+            </td>
+            <td>
+              {index + 1}. {result.trackName}<IconButton style={{padding:"4px"}} onClick={() => this.props.play(index)}><Icon fontSize="small">play_circle_filled</Icon></IconButton>
+              <br></br>
+              {result.artistName} <IconButton style={{padding:"4px"}} onClick={() => this.props.searchByArtist(this.props.result.artistId)}><Icon fontSize="small" >search</Icon></IconButton> 
+              <br></br>
+              {result.collectionName} <IconButton style={{padding:"4px"}} onClick={() => this.props.searchByCollection(this.props.result.collectionId)}><Icon fontSize="small" >search</Icon></IconButton> 
+              <br></br>
+              <a id={this.props.result.id} href={this.props.result.trackViewUrl} target="_blank" rel="noopener noreferrer" style={iTunesLinstStyle}> </a>
+            </td>
+          </tr>
+        </tbody>
+        </table>
+        </Card>
     );
   }
 }
