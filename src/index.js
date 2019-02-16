@@ -266,7 +266,7 @@ class Control extends React.Component {
     if(!playState) {
     } else {
       const result = this.props.results[this.props.index]
-      const table = <table><tr><td><img border={1} src={result.artworkUrl100} alt={result.name} style={{width:'32px', height:'32px'}}></img></td><td>{result.trackName} / {result.artistName}</td></tr></table>
+      const table = <table><tbody><tr><td><img border={1} src={result.artworkUrl100} alt={result.name} style={{width:'32px', height:'32px'}}></img></td><td>{result.trackName} / {result.artistName}</td></tr></tbody></table>
       card = <Card elevation={8} style={{position:'fixed',left:'0px',bottom:'0px',height:'40px', width:'100%', padding:"4px", zIndex:'990', alignItems:'top'}}>{table}</Card>
 
       if(playState === 'play'){  
