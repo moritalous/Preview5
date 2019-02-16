@@ -7,6 +7,7 @@ import Icon from '@material-ui/core/Icon';
 import IconButton from '@material-ui/core/IconButton'
 import Fab from '@material-ui/core/Fab';
 import Card from '@material-ui/core/Card';
+import Paper from '@material-ui/core/Paper';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
@@ -261,13 +262,15 @@ class Control extends React.Component {
 
   render(){
     let playState = this.state.playState;    
-    let card = ''
+    let paper = ''
     let button = '';
     if(!playState) {
     } else {
       const result = this.props.results[this.props.index]
-      const table = <table><tbody><tr><td><img border={1} src={result.artworkUrl100} alt={result.name} style={{width:'32px', height:'32px'}}></img></td><td>{result.trackName} / {result.artistName}</td></tr></tbody></table>
-      card = <Card elevation={8} style={{position:'fixed',left:'0px',bottom:'0px',height:'40px', width:'100%', padding:"4px", zIndex:'990', alignItems:'top'}}>{table}</Card>
+      const img = <img src={result.artworkUrl100} alt={result.name} style={{maxWidth:'44px', maxHeight:'44px', padding:'0px'}}></img>
+      const text = <div style={{textOverflow: 'ellipsis', overflow: 'hidden', fontSize: 'small'}}>{this.props.index + 1}. {result.trackName} / {result.artistName}</div>
+      const table = <table><tbody><tr><td style={{padding: '0px'}}>{img}</td><td style={{padding: '0px',}}>{text}</td></tr></tbody></table>
+      paper = <Paper elevation={8} style={{position:'fixed',left:'0px',bottom:'0px',height:'48px', width:'100%', padding:"0px", margin:'0px', zIndex:'990', alignItems:'top'}}>{table}</Paper>
 
       if(playState === 'play'){  
         button = <Fab style={{position:'fixed',right:'20px', bottom:'20px', padding:"4px", zIndex:'999'}} color="secondary" onClick={() => this.props.pause()}><Icon fontSize="small">pause_arrow</Icon></Fab>;
@@ -278,7 +281,7 @@ class Control extends React.Component {
 
     return(
       <div>
-        {card}
+        {paper}
         {button}
       </div>
     )
