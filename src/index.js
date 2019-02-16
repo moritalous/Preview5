@@ -115,6 +115,8 @@ class Logic extends React.Component {
         that.setState({
           results: results,
         });
+
+        window.scrollTo(0,0);
       }
       
     })
@@ -194,7 +196,7 @@ class Logic extends React.Component {
         <Header searchByKeyword={this.searchByKeyword}/>
         <Control playState={playState} pause={this.playPause} restart={this.playRestart} />
         <div style={{height:'72px'}}></div>
-        <List results={results} searchByArtist={this.searchByArtistId} searchByCollection={this.searchByCollectionId} play={this.play}/>
+        <List results={results} play={this.play}/>
         <audio id='audio' onEnded={this.playEnd} onTimeUpdate={this.playTimeupdate}></audio>
       </div>
     
@@ -260,10 +262,10 @@ class Control extends React.Component {
     let button = '';
     if(!playState) {
     } else if(playState === 'play'){
-      button = <Fab style={{position:'fixed',right:'20px', bottom:'20px', padding:"4px", zIndex:'999'}} color="primary" onClick={() => this.props.pause()}><Icon fontSize="small">pause_arrow</Icon></Fab>;
+      button = <Fab style={{position:'fixed',right:'20px', bottom:'20px', padding:"4px", zIndex:'999'}} color="secondary" onClick={() => this.props.pause()}><Icon fontSize="small">pause_arrow</Icon></Fab>;
       
     } else {
-      button = <Fab style={{position:'fixed',right:'20px', bottom:'20px', padding:"4px", zIndex:'999'}} color="primary" onClick={() => this.props.restart()}><Icon fontSize="small">play_arrow</Icon></Fab>;
+      button = <Fab style={{position:'fixed',right:'20px', bottom:'20px', padding:"4px", zIndex:'999'}} color="secondary" onClick={() => this.props.restart()}><Icon fontSize="small">play_arrow</Icon></Fab>;
     }
 
     return(
@@ -294,7 +296,7 @@ class List extends React.Component {
     let results = this.state.results;
 
     results.forEach((result, index) => {
-      children.push(<Row result={result} key={result.trackId} index={index} searchByArtist={this.props.searchByArtist} searchByCollection={this.props.searchByCollection} play={this.props.play}></Row>);
+      children.push(<Row result={result} key={result.trackId} index={index} play={this.props.play}></Row>);
     });
 
     return ( 
@@ -307,6 +309,7 @@ class Row extends React.Component {
 
   render() {
     let result = this.props.result;
+    let index = this.props.index;
 
     let iTunesLinstStyle = {
       display:'inline-block',
@@ -327,6 +330,8 @@ class Row extends React.Component {
             <img src={this.props.result.artworkUrl100} alt={this.props.result.name}></img>
             </td>
             <td>
+              {index + 1}. {result.trackName}<IconButton style={{padding:"4px"}} onClick={() => this.props.play(index)}><Icon fontSize="small">play_circle_filled</Icon></IconButton>
+              <br></br>
               {result.artistName}
               <Link to={'/id/'+this.props.result.artistId} style={{textDecoration:'none'}}>
                 <IconButton style={{padding:"4px"}} ><Icon fontSize="small" >search</Icon></IconButton> 
