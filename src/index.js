@@ -196,7 +196,7 @@ class Logic extends React.Component {
       
       <div>
         <Header searchByKeyword={this.searchByKeyword}/>
-        <Control playState={playState} pause={this.playPause} restart={this.playRestart} />
+        <Control playState={playState} pause={this.playPause} restart={this.playRestart} results={results} index={this.state.playIndex} />
         <div style={{height:'72px'}}></div>
         <List results={results} play={this.play}/>
         <audio id='audio' onEnded={this.playEnd} onTimeUpdate={this.playTimeupdate}></audio>
@@ -261,17 +261,26 @@ class Control extends React.Component {
 
   render(){
     let playState = this.state.playState;    
+    let card = ''
     let button = '';
     if(!playState) {
-    } else if(playState === 'play'){
-      button = <Fab style={{position:'fixed',right:'20px', bottom:'20px', padding:"4px", zIndex:'999'}} color="secondary" onClick={() => this.props.pause()}><Icon fontSize="small">pause_arrow</Icon></Fab>;
-      
     } else {
-      button = <Fab style={{position:'fixed',right:'20px', bottom:'20px', padding:"4px", zIndex:'999'}} color="secondary" onClick={() => this.props.restart()}><Icon fontSize="small">play_arrow</Icon></Fab>;
+      const result = this.props.results[this.props.index]
+      const table = <table><tr><td><img border={1} src={result.artworkUrl100} alt={result.name} style={{width:'32px', height:'32px'}}></img></td><td>{result.trackName} / {result.artistName}</td></tr></table>
+      card = <Card elevation={8} style={{position:'fixed',left:'0px',bottom:'0px',height:'40px', width:'100%', padding:"4px", zIndex:'990', alignItems:'top'}}>{table}</Card>
+
+      if(playState === 'play'){  
+        button = <Fab style={{position:'fixed',right:'20px', bottom:'20px', padding:"4px", zIndex:'999'}} color="secondary" onClick={() => this.props.pause()}><Icon fontSize="small">pause_arrow</Icon></Fab>;
+      } else {
+        button = <Fab style={{position:'fixed',right:'20px', bottom:'20px', padding:"4px", zIndex:'999'}} color="secondary" onClick={() => this.props.restart()}><Icon fontSize="small">play_arrow</Icon></Fab>;
+      }
     }
 
     return(
-      <div>{button}</div>
+      <div>
+        {card}
+        {button}
+      </div>
     )
   }
 
