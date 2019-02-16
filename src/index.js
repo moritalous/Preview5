@@ -355,7 +355,7 @@ class Row extends React.Component {
 // ========================================
 
 ReactDOM.render(
-  <BrowserRouter>
+  <BrowserRouter basename='/Preview5'>
     <div>
       <Switch>
         <Route path='/q/:query' component={Logic}></Route>
