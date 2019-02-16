@@ -309,6 +309,7 @@ class List extends React.Component {
     results.forEach((result, index) => {
       children.push(<Row result={result} key={result.trackId} index={index} play={this.props.play}></Row>);
     });
+    children.push(<div style={{height:'40px'}}></div>)
 
     return ( 
       <div>{children}</div>
