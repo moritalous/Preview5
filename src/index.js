@@ -91,10 +91,7 @@ class Logic extends React.Component {
       json.feed.results.forEach(function (result) {
         ids = ids.concat(result.id, ',');
       });
-
-      let random = Math.random()
-
-      that.search('https://itunes.apple.com/lookup?country=JP&entity=song&id=' + ids + '&random=' + random);
+      that.search('https://itunes.apple.com/lookup?country=JP&entity=song&id=' + ids);
     })
   }
   search(url) {
@@ -102,7 +99,10 @@ class Logic extends React.Component {
 
     const that = this;
 
-    fetch(url, {
+    let random = Math.random()
+    let fetchUrl = url + '&random=' + random
+
+    fetch(fetchUrl, {
       mode: 'cors',
       headers: {
         "Content-Type": "application/json; charset=utf-8",
