@@ -92,7 +92,9 @@ class Logic extends React.Component {
         ids = ids.concat(result.id, ',');
       });
 
-      that.search('https://itunes.apple.com/lookup?country=JP&entity=song&id=' + ids);
+      let random = Math.random()
+
+      that.search('https://itunes.apple.com/lookup?country=JP&entity=song&id=' + ids + '&random=' + random);
     })
   }
   search(url) {

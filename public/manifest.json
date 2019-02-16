@@ -6,10 +6,25 @@
       "src": "round-play_circle_filled-24px.svg",
       "sizes": "512x512 256x256 128x128 64x64 32x32 24x24 16x16",
       "type": "image/svg+xml"
+    },
+    {
+      "src": "round_play_circle_filled_black_48pt_1x.png",
+      "sizes": "48x48",
+      "type": "image/png"
+    },
+    {
+      "src": "round_play_circle_filled_black_48pt_2x.png",
+      "sizes": "96x96",
+      "type": "image/png"
+    },
+    {
+      "src": "round_play_circle_filled_black_48pt_3x.png",
+      "sizes": "144x144",
+      "type": "image/png"
     }
   ],
   "start_url": ".",
   "display": "standalone",
   "theme_color": "#3f51b5",
-  "background_color": "#f50057"
+  "background_color": "#000000"
 }
