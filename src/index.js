@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { BrowserRouter, Route, Switch, Link} from 'react-router-dom'
 import './index.css';
 
 import Icon from '@material-ui/core/Icon';
@@ -26,7 +27,7 @@ class Logic extends React.Component {
     this.search = this.search.bind(this);
     this.searchByCollectionId = this.searchByCollectionId.bind(this);
     this.searchByArtistId = this.searchByArtistId.bind(this);
-    this.searchByTerm = this.searchByTerm.bind(this);
+    this.searchByKeyword = this.searchByKeyword.bind(this);
     this.play = this.play.bind(this);
     this.playEnd = this.playEnd.bind(this);
     this.playTimeupdate = this.playTimeupdate.bind(this);
@@ -34,7 +35,35 @@ class Logic extends React.Component {
     this.playRestart = this.playRestart.bind(this);
     this.playFinish = this.playFinish.bind(this);
 
-    this.searchByTopsales();
+    switch(props.match.path) {
+      case '/q/:query':
+        this.searchByTerm(props.match.params.query);
+        break;
+      case '/id/:id':
+        this.searchByCollectionId(props.match.params.id);
+        break;
+      default:
+        this.searchByTopsales();
+        break;
+    }
+  }
+
+  componentWillReceiveProps(props) {
+    switch(props.match.path) {
+      case '/q/:query':
+        this.searchByTerm(props.match.params.query);
+        break;
+      case '/id/:id':
+        this.searchByCollectionId(props.match.params.id);
+        break;
+      default:
+        this.searchByTopsales();
+        break;
+    }
+  }
+
+  searchByKeyword(term) {
+    this.props.history.push('/q/' + term)
   }
 
   searchByTerm(term) {
@@ -42,6 +71,7 @@ class Logic extends React.Component {
     let url = "https://itunes.apple.com/search?country=JP&entity=song&term=" + keyword;
     this.search(url);
   }
+  
   searchByCollectionId(collectionId) {
     let url = "https://itunes.apple.com/lookup?country=JP&entity=song&id=" + collectionId
     this.search(url)
@@ -98,10 +128,11 @@ class Logic extends React.Component {
 
     let audio = document.getElementById('audio');
     let result = this.state.results[index];
-    // console.info(result.trackName);
-
-    audio.src = result.previewUrl;
-    audio.play();
+    
+    if(audio) {
+      audio.src = result.previewUrl;
+      audio.play();
+    }
   }
 
   playEnd(e) {
@@ -120,7 +151,9 @@ class Logic extends React.Component {
     })
 
     let audio = document.getElementById('audio');
-    audio.pause();
+    if(audio) {
+      audio.pause();
+    }
   }
 
   playRestart() {
@@ -129,20 +162,22 @@ class Logic extends React.Component {
     })
 
     let audio = document.getElementById('audio');
-    audio.play();
+    if(audio) {
+      audio.play();
+    }
   }
 
   playFinish() {
-    // console.info('Play Finish')
-
     this.setState({
       playIndex: null,
       playState: null,
     })
 
     let audio = document.getElementById('audio');
-    audio.pause();
-    audio.src = '';
+    if(audio) {
+      audio.pause();
+      audio.src = '';
+    }
   }
 
   playTimeupdate(e){
@@ -150,14 +185,13 @@ class Logic extends React.Component {
   }
 
   render() {
-    // console.info(this.state)
     let results = this.state.results;
     let playState = this.state.playState;
 
     return(
       
       <div>
-        <Header searchByKeyword={this.searchByTerm}/>
+        <Header searchByKeyword={this.searchByKeyword}/>
         <Control playState={playState} pause={this.playPause} restart={this.playRestart} />
         <div style={{height:'72px'}}></div>
         <List results={results} searchByArtist={this.searchByArtistId} searchByCollection={this.searchByCollectionId} play={this.play}/>
@@ -189,9 +223,11 @@ class Header extends React.Component {
     return (    
       <AppBar position="fixed" color="primary" >
         <Toolbar>
-          <Typography variant="title" color="inherit" style={{marginRight:"16px"}}>
-            Preview5
-          </Typography>
+            <Typography variant="title" color="inherit" style={{marginRight:"16px"}}>
+            <Link to='/' style={{textDecoration:'none',color:'inherit'}}>
+              Preview5
+              </Link>
+            </Typography>
           <div style={{ flexGrow: 1 }}></div>
           <div style={{position:"relative", marginLeft:0, backgroundColor: fade('#FFFFFF', 0.15),}}>
           <div style={{position: 'absolute',height: '100%',display: 'flex',alignItems: 'center',justifyContent: 'center',paddingLeft:"8px"}}>
@@ -214,8 +250,6 @@ class Control extends React.Component {
   }
 
   componentWillReceiveProps(props) {
-    // console.log('componentWillReceiveProps')
-    // console.log(props.playState)
     this.setState({
       playState: props.playState
     });
@@ -273,7 +307,6 @@ class Row extends React.Component {
 
   render() {
     let result = this.props.result;
-    let index = this.props.index;
 
     let iTunesLinstStyle = {
       display:'inline-block',
@@ -294,11 +327,15 @@ class Row extends React.Component {
             <img src={this.props.result.artworkUrl100} alt={this.props.result.name}></img>
             </td>
             <td>
-              {index + 1}. {result.trackName}<IconButton style={{padding:"4px"}} onClick={() => this.props.play(index)}><Icon fontSize="small">play_circle_filled</Icon></IconButton>
+              {result.artistName}
+              <Link to={'/id/'+this.props.result.artistId} style={{textDecoration:'none'}}>
+                <IconButton style={{padding:"4px"}} ><Icon fontSize="small" >search</Icon></IconButton> 
+              </Link>
               <br></br>
-              {result.artistName} <IconButton style={{padding:"4px"}} onClick={() => this.props.searchByArtist(this.props.result.artistId)}><Icon fontSize="small" >search</Icon></IconButton> 
-              <br></br>
-              {result.collectionName} <IconButton style={{padding:"4px"}} onClick={() => this.props.searchByCollection(this.props.result.collectionId)}><Icon fontSize="small" >search</Icon></IconButton> 
+              {result.collectionName}
+              <Link to={'/id/'+this.props.result.collectionId} style={{textDecoration:'none'}}>
+                <IconButton style={{padding:"4px"}} ><Icon fontSize="small" >search</Icon></IconButton> 
+              </Link>
               <br></br>
               <a id={this.props.result.id} href={this.props.result.trackViewUrl} target="_blank" rel="noopener noreferrer" style={iTunesLinstStyle}> </a>
             </td>
@@ -312,6 +349,15 @@ class Row extends React.Component {
 
 // ========================================
 
-ReactDOM.render(<Logic/> ,
+ReactDOM.render(
+  <BrowserRouter>
+    <div>
+      <Switch>
+        <Route path='/q/:query' component={Logic}></Route>
+        <Route path='/id/:id' component={Logic}></Route>
+        <Route path='/' component={Logic}></Route>
+      </Switch>
+    </div>
+  </BrowserRouter>,
   document.getElementById('root')
 );
