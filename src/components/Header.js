@@ -31,7 +31,7 @@ class Header extends React.Component {
         <Toolbar>
             <Typography variant="title" color="inherit" style={{marginRight:"16px"}}>
             <Link to='/' style={{textDecoration:'none',color:'inherit'}}>
-              Preview5
+              Preview
               </Link>
             </Typography>
           <div style={{ flexGrow: 1 }}></div>

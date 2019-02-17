@@ -1,5 +1,7 @@
 import React from 'react';
 
+import Grid from '@material-ui/core/Grid'
+
 import Header from './Header'
 import Control from './Control'
 import List from './List'
@@ -208,11 +210,15 @@ class Logic extends React.Component {
       <div>
         <Header searchByKeyword={this.searchByKeyword}/>
         <Control playState={playState} time={time} pause={this.playPause} restart={this.playRestart} results={results} index={this.state.playIndex} />
-        <div style={{height:'72px'}}></div>
-        <List results={results} play={this.play}/>
+        <div style={{height:'64px'}}></div>
+        <Grid container justify={'center'}>
+          <Grid item xs={12} sm={8}>
+            <List results={results} play={this.play}/>
+          </Grid>
+        </Grid>
+      
         <audio id='audio' onEnded={this.playEnd} onTimeUpdate={this.playTimeupdate}></audio>
       </div>
-    
     );
   }
 }
