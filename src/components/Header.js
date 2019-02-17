@@ -39,7 +39,7 @@ class Header extends React.Component {
           <div style={{position: 'absolute',height: '100%',display: 'flex',alignItems: 'center',justifyContent: 'center',paddingLeft:"8px"}}>
             <SearchIcon />
             </div>
-            <InputBase name="keyword" type="search" placeholder="SearchÃ¢â‚¬Â¦" style={{color: "inherit",paddingLeft:"48px"}} value={this.state.keyword} onChange={this.changeKeyword} onKeyDown={(e) => (e.keyCode === 13)?this.props.searchByKeyword(this.state.keyword):null} onKeyUp={(e) => (e.keyCode === 13)?document.activeElement.blur():null} />
+            <InputBase name="keyword" type="search" placeholder="Search..." style={{color: "inherit",paddingLeft:"48px"}} value={this.state.keyword} onChange={this.changeKeyword} onKeyDown={(e) => (e.keyCode === 13)?this.props.searchByKeyword(this.state.keyword):null} onKeyUp={(e) => (e.keyCode === 13)?document.activeElement.blur():null} />
           </div>
         </Toolbar>
       </AppBar>      
